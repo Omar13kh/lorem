@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <title> القرآن الكريم</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Almarai&display=swap" rel="stylesheet">
+  <style>
+    /* الألوان */
+    :root {
+      --primary-color: #0066cc;
+      --secondary-color: #e5e5e5;
+      --background-color: #f9f9f9;
+      --text-color: #333;
+      --accent-color: #ff5722;
+      --accent-text-color: #fff;
+    }
+
+    /* الخطوط */
+    body {
+      font-family: 'Almarai', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.5;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+    }
+
+    h1, h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    /* العناصر */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .logo a{
+        text-decoration: none;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .surahs {
+      display: flex;
+      align-items: center;
+    }
+
+    .surahs select {
+      font-size: 1.5rem;
+      padding: 0.5rem;
+      border: none;
+      border-bottom: 2px solid var(--primary-color);
+      background-color: transparent;
+      color: var(--primary-color);
+      cursor: pointer;
+      margin-left: 20px;
+      appearance: none;
+    }
+
+    .surahs select:hover {
+      background-color: var(--primary-color);
+      color: var(--accent-text-color);
+    }
+
+    .surahs select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .surahs option {
+      background-color: var(--secondary-color);
+      color: var(--primary-color);
+    }
+
+    .quran {
+      font-size: 2rem;
+      margin-bottom: 40px;
+      padding: 40px;
+      border: 2px solid var(--primary-color);
+      border-radius: 5px;
+      background-color: var(--secondary-color);
+      text-align: right;
+      direction: rtl;
+      line-height: 2;
+    }
+
+    .quran p {
+      margin: 0;
+      padding: 0.5rem;
+      word-wrap: break-word;
+    }
+
+    .quran p:nth-child(even) {
+      background-color: #fff;
+    }
+
+    .footer {
+      font-size: 1.2rem;
+      margin-top: 40px;
+      color: var(--text-color);
+      text-align: center;
+    }
+
+    /* الميديا */
+    @media (max-width: 768px) {
+      h1, h2 {
+        font-size: 2rem;
+      }
+
+      .surahs select {
+        font-size: 1.2rem;
+      }
+
+      .quran {
+        font-size: 1.8rem;
+      }
+    }
+	@media screen and (max-width: 480px) {
+		.logo {
+			font-size: 20px !important;
+			display: flex;
+		}
+  body {
+    font-size: 16px;
+  }
+
+  h1, h2 {
+    font-size: 2rem;
+  }
+
+  .surahs select {
+    font-size: 1.2rem;
+  }
+
+  .quran {
+    font-size: 1.5rem;
+    padding: 20px;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="logo"><a href="./index.html">القرآن الكريم</a></div>
+      <div class="surahs">
+        <label for="surah-select">اختر سورة:</label>
+        <select id="surah-select">
+          <option value="">حدد سورة</option>
+        </select>
+      </div>
+    </header>
+    <main>
+      <div class="quran" id="quran"></div>
+    </main>
+    <footer class="footer">تم تطوير هذه الصفحة بواسطة  omar khairy</footer>
+  </div>
+
+
+  <script>
+    const surahsSelect = document.getElementById('surah-select');
+    const quranDiv = document.getElementById('quran');
+
+    // استدعاء API للحصول على معلومات سور القرآن الكريم
+    fetch("https://api.alquran.cloud/v1/meta")
+      .then(response => response.json())
+      .then(data => {
+        // عرض اسماء السور في القائمة المنسدلة
+        data.data.surahs.references.forEach(surah => {
+          const option = document.createElement('option');
+          option.value = surah.number;
+          option.textContent = `${surah.number}. ${surah.name}`;
+          surahsSelect.appendChild(option);
+        });
+      });
+
+    // استدعاء API للحصول على نص سورة محددة
+    surahsSelect.addEventListener('change', () => {
+      const selectedSurah = surahsSelect.value;
+      if (selectedSurah) {
+        fetch(`https://api.alquran.cloud/v1/surah/${selectedSurah}`)
+          .then(response => response.json())
+          .then(data => {
+            // عرض نص السورة المحددة
+            const verses = data.data.ayahs.map(ayah => ayah.text);
+            const surahHTML= verses.map(verse => `<p>${verse}</p>`).join('');
+            quranDiv.innerHTML = surahHTML;
+          });
+      } else {
+        quranDiv.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html>

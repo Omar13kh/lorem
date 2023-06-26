@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./fonts/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="./images/icon.icon.png">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo"><a href="./index.html">الهدي</a></div>
+            <ul>
+                <li class="active"><a href="#main">الصفحة الرئيسية</a></li>
+                <li><a href="#hadith">احاديث</a></li>
+                <li><a href="#lectures">محاضرات</a></li>
+                <li><a href="#qran">الْقُرْآن الْكَرِيْم</a></li>
+                <li><a href="#oopp">أوقات الصلاة</a></li>
+                <li><a href="./op.html">تسابيح</a></li>
+                <li><a href="./islam.html">استمع</a></li>
+                <li><a href="./radio.html">الاذاعة</a></li>
+                <li><a href="./tafser.html">تفسير</a></li>
+                <li><a href="./doak.html">ادعية</a></li>
+               <li><a href="#footer">تواصل معنا</a></li>
+            </ul>
+            <div class="bars">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+     
+    </header>
+    <style>
+        /* Quran Section */
+
+.surahContainer{
+    display:flex;
+    justify-content:space-around;
+    flex-wrap: wrap;
+    direction: rtl;
+}
+.surahContainer .surah{
+    min-height: 140px;
+    min-width: 170px;
+    box-shadow: 0 0 5px rgba(0,0,0,.4);
+    margin-bottom: 8px;
+    text-align: center;
+    display: grid;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+    color: #232323;
+    font-size: 17px;
+    margin-top: 45px;
+}
+.surahContainer .surah:hover{
+    transform: scale(1.05);
+    background-color: #43a047;
+    color: #fff;
+    transition: .5s;
+}
+/* Surah Section */
+.surah-popup{
+    direction: rtl;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: #fff;
+    overflow-y: scroll;
+    transform: translateX(100%);
+    
+}
+.surah-popup.active{
+    transform: translateX(0);
+    transition: .7 all ease-in-out;
+}
+.surah-popup::-webkit-scrollbar{
+    width: 10px;
+    background: rgb(204, 252, 204);
+}
+.surah-popup::-webkit-scrollbar-thumb{
+    background: #247429;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.close-popup{
+    position: sticky;
+    top: 8px;
+    right: 5px;
+    width: 40px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 23px;
+    color: #fff;
+    cursor: pointer;
+    background: #247429;
+    border-radius: 25%;
+}
+.surah-popup .ayat{
+    padding: 20px;
+    width: calc(100% - 40px);
+    margin-top: 20px;
+    margin-right: 40px;
+    color: #121212;
+    text-align: center;
+}
+.surah-popup .ayat p{
+    line-height: 2;
+    width: 100%;
+    
+}
+
+/* Scroll Btn */
+.scrollBtn{
+    direction: rtl;
+    position: fixed;
+    right: 20px;
+    bottom: 0;
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #43a047;
+    border-radius: 50%;
+    font-size: 20px;
+    transition: 1s bottom ease-in-out;
+    bottom: -50px;
+    cursor:pointer;
+}
+.scrollBtn.active{
+    bottom: 20px;
+}
+
+
+@media (max-width : 1024px) {
+    .lecture-container .right, .lecture-container .left {
+        width: 98%;
+    }
+}
+    </style>
+    
+    <section class="quran">
+        <h3 ><span style="font-size: 40px;">{</span> تفسير القرأن الكريم <span style="font-size: 40px;">}</span></h3>
+        <div class="container">
+            <div class="surahContainer">
+                
+                </div>
+            </div>
+    </section>    
+
+    <!-- Surah Section -->
+    <div class="surah-popup ">
+        <div class="close-popup">
+          <i class="fas fa-times"></i> 
+        </div>
+        <div class="ayat" >
+
+        </div>
+    </div>
+    
+    
+    
+    
+    
+<script>
+  
+let SurahsContainer = document.querySelector('.surahContainer');
+// let ar1 = document.querySelector('.ar1');
+// let ar2 = document.querySelector('.ar2');
+getSurahs()
+function getSurahs()
+{
+    fetch("https://api.alquran.cloud/v1/meta")
+    .then(response => response.json())
+    .then(data=>{
+        let surahs = data.data.surahs.references;
+        let numberOfSurahs = 114;
+        SurahsContainer.innerHTML = "";
+        for (let i = 0; i < numberOfSurahs; i++) {
+
+            SurahsContainer.innerHTML += 
+            
+            `
+            <div class="surah">
+                <p>${surahs[i].name}</p> 
+            <p>${surahs[i].englishName}</p> 
+            </div>
+            `
+
+        }
+        let SurahsTitels = document.querySelectorAll('.surah');
+        let popup = document.querySelector('.surah-popup'),
+        
+        AyatContainer = document.querySelector('.ayat');
+        SurahsTitels.forEach((title,index)=>{
+            title.addEventListener('click',()=>{
+                title.scrollTo({
+                    behavior : "auto"
+                })
+                fetch(`https://quranenc.com/api/v1/translation/sura/arabic_moyassar/${index + 1}`)
+                .then(response => response.json())
+                .then(data=>{
+                    AyatContainer.innerHTML = "";
+                    let Ayat = data.result;
+                    Ayat.forEach(aya=>{
+                        popup.classList.add('active');
+                        AyatContainer.innerHTML += `  
+                        <div style="background:rgb(255, 250, 243); background-size: cover;  ">
+                            <span style="font-size:20px;color:#247429; ">(${aya.aya})- { ${aya.arabic_text} }  => </span>
+                            <span style="font-size:20px; margin:20px;"> ${aya.translation}</span>
+                            <hr>
+                        </div>    
+                        `
+                    })  
+                })
+            })
+        })  
+        let closePopup = document.querySelector('.close-popup');
+        closePopup.addEventListener('click',()=>{
+            popup.classList.remove('active');
+        })   
+    })
+}    
+
+</script>
+
+<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+</body>
+</html>
